@@ -63,7 +63,7 @@ const App = (props) => {
                 isError ?
                   <Alert
                     message="Hata"
-                    description="Bilgilerinizde hata var."
+                    description="Bilgilerinizde hata var. Lütfen Kontrol Edin"
                     type="error"
                     showIcon
                   />
