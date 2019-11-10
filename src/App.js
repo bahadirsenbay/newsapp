@@ -9,7 +9,7 @@ const { Content, Footer } = Layout;
 
 const App = (props) => {
   const categoryPathname = props.history.location.pathname.substring(1);
-  const [userLogged, setUserLogged] = useState(false)
+  const [userLogged, setUserLogged] = useState(true)
   const [isError, setError] = useState(false)
 
   let username = 'bahadir';
