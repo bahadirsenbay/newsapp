@@ -4,6 +4,7 @@ import { Route, withRouter } from 'react-router-dom'
 import Headers from './Headers'
 import News from './News'
 import './App.css';
+import Deneme from './deneme';
 
 const { Content, Footer } = Layout;
 
@@ -99,6 +100,7 @@ const App = (props) => {
               <Route exact path="/science" component={News} />
               <Route exact path="/sports" component={News} />
               <Route exact path="/technology" component={News} />
+              <Route exact path="/deneme" component={Deneme} />
             </div>
           </Content>
           <Footer />

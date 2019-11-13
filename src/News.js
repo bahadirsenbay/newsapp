@@ -1,60 +1,29 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { Card, Icon, Col, Row, Button, Input, Modal, Drawer, List, Avatar } from 'antd'
-
+import {observer} from 'mobx-react-lite'
+import {NewsStore} from './stores/newsStore'
 const { Meta } = Card;
 const { Search } = Input
 
-const News = (props) => {
-    const [news, setNews] = useState()
+const News = observer((props) => {
     const [modals, setModals] = useState({ index: null })
-    const [drawers, setDrawers] = useState(false)
-    const [saved, setSaved] = useState([])
     const categoryPath = props.history.location.pathname.substring(1);
 
     //Kategorileme Apisi
     useEffect(() => {
-        axios.get('https://newsapi.org/v2/top-headlines?country=tr&category=' + categoryPath + '&apiKey=50663fc6125e4bb7b58f140e0f08ad59')
-            .then(res => {
-                setNews(res.data.articles)
-            })
+        NewsStore.getNews(categoryPath)
     }, [categoryPath])
-
-
-    const handleValue = (e) => {
-        const searchs = e.target.value
-        axios.get('https://newsapi.org/v2/top-headlines?country=tr&q=' + searchs + '&apiKey=50663fc6125e4bb7b58f140e0f08ad59')
-            .then(res => {
-                setNews(res.data.articles)
-            })
-    }
 
     const showModal = (i) => {
         setModals({ index: i })
     }
 
-    const showDrawer = () => {
-        setDrawers({
-            visible: true
-        })
-    }
-
-    const onClose = () => {
-        setDrawers({
-            visible: false
-        })
-    }
-
-    const handleForSave = (title, image) => {
-        let newItem={ title,image }
-        setSaved([...saved, newItem])
-    }
     return (
 
         <>
         <Row gutter={23}>
-            <Col span={22}><Search onChange={(e) => handleValue(e)} placeholder="search text" style={{ width: '100%', marginBottom: 18 }} /></Col>
-            <Col span={1}><Button type="primary" onClick={() => showDrawer()}>Open</Button></Col>
+            <Col span={22}><Search onChange={(e) => NewsStore.handleValue(e)} placeholder="search text" style={{ width: '100%', marginBottom: 18 }} /></Col>
+            <Col span={1}><Button type="primary" onClick={() => NewsStore.showDrawer()}>Saved</Button></Col>
         </Row>
             
             <div>
@@ -62,11 +31,11 @@ const News = (props) => {
                 <Drawer
                     placement="right"
                     closable={false}
-                    onClose={() => onClose()}
-                    visible={drawers.visible}
+                    onClose={() => NewsStore.showDrawer()}
+                    visible={NewsStore.visible}
                 >
                     <List
-                            dataSource={saved}
+                            dataSource={NewsStore.saved}
                             renderItem={item => (
                             <List.Item>
                                 <List.Item.Meta
@@ -83,7 +52,7 @@ const News = (props) => {
             <Row gutter={16}>
                 <List
                     grid={{ gutter: 16, column: 4 }}
-                    dataSource={news}
+                    dataSource={NewsStore.news}
                     renderItem={(res,index) => (
                     <List.Item>
                                     <Card
@@ -118,7 +87,7 @@ const News = (props) => {
                                                 <hr />
                                                 {res.content && res.content}
                                             </Modal>,
-                                            <Icon onClick={() => handleForSave(res.title, res.urlToImage)} type="save" key="save" />,
+                                            <Icon onClick={() => NewsStore.handleForSave(res.title, res.urlToImage)} type="save" key="save" />,
                                             <Icon type="edit" key="edit" />,
                                             <a href={res.url} rel="noopener noreferrer" target="_blank"><Icon type="right" key="edit" /></a>,
 
@@ -138,7 +107,7 @@ const News = (props) => {
 
         </>
     )
-}
+})
 
 export default News;
 
